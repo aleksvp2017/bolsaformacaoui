@@ -1,2 +1,18 @@
 # bolsaformacaoui
-UI for updating data into Bolsa-Formação panel. Also creating and checking alerts for KPIs.
+
+> UI projeto for updating data into Bolsa-Formação Panel. Also configuring and checking alerts on KPIs.
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+```
+
+For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
