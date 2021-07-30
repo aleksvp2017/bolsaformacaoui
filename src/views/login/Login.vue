@@ -37,10 +37,10 @@
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-              <v-btn color="#329D9C" @click="registrar" class="white--text">Registrar</v-btn>
+              <v-btn color="primary" @click="registrar" class="white--text">Registrar</v-btn>
               <v-spacer></v-spacer>
-              <v-btn :loading="loading" :disabled="loading" @click="recuperarSenha" color="#ffbb80" class="white--text">Recuperar senha</v-btn>
-              <v-btn color="#329D9C" class="white--text" @click="login">Entrar</v-btn>
+              <v-btn :loading="loading" :disabled="loading" @click="recuperarSenha" color="secondary" class="white--text">Recuperar senha</v-btn>
+              <v-btn color="primary" class="white--text" @click="login">Entrar</v-btn>
             </v-card-actions>
           </v-card>
         </v-row>
