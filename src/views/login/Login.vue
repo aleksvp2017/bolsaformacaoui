@@ -35,6 +35,9 @@
                   @click:append="showPassword = !showPassword"/>
               </v-form>
             </v-card-text>
+            <v-alert :type="tipoAlerta" dense outlined dismissible v-model="mostrarAlerta">
+              {{alerta}}
+            </v-alert>              
             <v-divider></v-divider>
             <v-card-actions>
               <v-btn color="primary" @click="registrar" class="white--text">Registrar</v-btn>
@@ -50,11 +53,17 @@
 </template>
 
 <script>
-  
+  import {recuperarSenha} from '../../services/Autenticador'
+  import {MESSAGE, ERROR} from '../../services/Constantes'
+
+
   export default {
     data() {
       return {
         loading: false,
+        mostrarAlerta: false,
+        alerta: '',
+        tipoAlerta: 'error',
         credencial :{
           email: '',
           senha: '',
@@ -67,7 +76,24 @@
         console.log('login')
       },
       recuperarSenha(){
-          console.log('recuperarSenha')
+        if (!this.credencial.email){
+          this.alerta = 'Preencha o email',
+          this.tipoAlerta = 'error'
+          this.mostrarAlerta = true
+          return
+        }
+        this.loading = true
+        recuperarSenha(this.credencial.email).then(response => {
+          this.alerta = response.body[MESSAGE]
+          this.tipoAlerta = 'info'
+          this.mostrarAlerta = true        
+          this.loading = false
+        }).catch( error => {
+          this.alerta = error.body[ERROR]
+          this.tipoAlerta = 'error'
+          this.mostrarAlerta = true                  
+          this.loading = false
+        })
       },      
       registrar(){
           console.log('registrar')
