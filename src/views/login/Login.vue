@@ -55,6 +55,8 @@
 <script>
   import {recuperarSenha} from '../../services/Autenticador'
   import {MESSAGE, ERROR} from '../../services/Constantes'
+  import {mapActions} from 'vuex'
+  import {obterRota } from '../../routes.js'
 
 
   export default {
@@ -72,8 +74,17 @@
       }
     },
     methods : {
+      ...mapActions(['ActionLogin']),
       login(){
-        console.log('login')
+        this.alerta = ''
+        this.ActionLogin(this.credencial).then((response) => {
+          this.$router.push(obterRota('Home'))
+        }).catch (error => {
+          console.log('Error: ', error)
+          this.alerta = error.body[ERROR]
+          this.tipoAlerta = "error"
+          this.mostrarAlerta = true
+        })
       },
       recuperarSenha(){
         if (!this.credencial.email){

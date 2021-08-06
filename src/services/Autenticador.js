@@ -6,8 +6,8 @@ Vue.use(VueResource)
 const http = Vue.http
 
 
+//os dados do menu já voltam dentro de usuário
 async function login(credencial){
-    console.log('Tentando acessar: ', BASE_BACKEND_URL + 'login')
     let senhaHash = encripta(credencial.senha)
     return  http.post(BASE_BACKEND_URL + 'login', {usuario: { email: credencial.email, senha: senhaHash}})
 }

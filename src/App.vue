@@ -1,6 +1,6 @@
 <template>
   <v-app>
-      <!--<navegacaolateral/>-->
+      <navegacaolateral/>        
       <v-main>
           <router-view></router-view>
       </v-main>
@@ -8,9 +8,11 @@
 </template>
 
 <script>
+import NavegacaoLateral from './views/navegacao/NavegacaoLateral.vue'
 
 export default {
     components: {
+      'navegacaolateral': NavegacaoLateral      
     },    
   }
 </script>
