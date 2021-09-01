@@ -6,8 +6,8 @@ Vue.use(VueResource)
 const http = Vue.http
 
 
-async function atualizarDados(etapasAAtualizar){
-    return  http.post(BASE_BACKEND_URL + 'carga', {etapasAAtualizar: etapasAAtualizar})
+async function atualizarDados(etapasAAtualizar, configuracoes){
+    return  http.post(BASE_BACKEND_URL + 'carga', {etapasAAtualizar: etapasAAtualizar, configuracoes: configuracoes})
 }
 
 async function listarEtapasRealizadas(){

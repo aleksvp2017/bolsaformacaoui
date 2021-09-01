@@ -6,15 +6,72 @@
         <br/><br/><br/>
         <div align="center">
             <v-btn color="primary" class="white--text" @click="abrirPopupAtualizarDados">Atualizar dados</v-btn>
-                <v-dialog v-model="dialogAtualizarDados" persistent max-width="600px">
-                    <template v-slot:activator="{ on }">                      
-                    </template>                 
+                <v-dialog v-model="dialogAtualizarDados" persistent max-width="60%">
                     <v-card>
                         <v-card-text>                        
                             <v-alert :type="tipoAlertaPopup" dense text dismissible v-model="mostrarAlertaPopup">
                                 {{alertaPopup}}
                             </v-alert>  
-                            Selecione as etapas que deseja atualizar e clique em "Atualizar"
+                            <span class="text-h6">
+                                Altere as configurações se necessário, selecione as etapas que deseja e clique em "Atualizar".
+                            </span>
+                            <br/>
+                            <!-- CONFIGURACOES -->
+                            <br/>
+                            
+                            <p class="text-center font-weight-black">Configurações</p>
+                            <v-row >
+                                <v-col
+                                    cols="12"
+                                    sm="8"
+                                >
+                                    <v-text-field label="Diretório das planilhas" hint="Use barras duplas \\ para separar as pastas" 
+                                        v-model="configuracoes.diretorioDados" type="text"/>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="4"
+                                >       
+                                    <v-text-field label="Ano padrão" v-model="configuracoes.ano" type="number"/>
+                                </v-col>
+                            </v-row>
+                            <v-row >
+                                <v-col
+                                    cols="12"
+                                    sm="8"
+                                >    
+                                    <v-text-field label="Período pactuação" v-model="configuracoes.periodoPactuacao" type="number"/>                                       
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="4"
+                                >                                     
+                                    <v-text-field label="Data padrão" v-model="configuracoes.dataPadrao" type="text"/>
+                                </v-col>
+                            </v-row>
+                            
+                            <!-- ETAPAS -->
+                            <p class="text-center font-weight-black">Etapas</p>
+                            <v-data-table
+                                title="Etapas"
+                                class="elevation-1"
+                                :headers="colunasEtapas"
+                                :items="etapas"
+                                v-model="etapasSelecionadas"
+                                show-select
+                                v-show="etapas.length > 0"
+                                item-key="codigo"
+                                :search="buscaEtapa"
+                                items-per-page="15"
+                                :hide-default-footer="true"
+                                dense
+                                >     
+                                    <template #item.arquivo="{item}">
+                                        <p v-show="!etapasSelecionadas.includes(item)">{{item.arquivo}}</p>
+                                        <v-text-field v-model="item.arquivo" type="text" v-show="etapasSelecionadas.includes(item)"/>
+                                    </template>             
+                            </v-data-table>                               
+                            <!--
                             <v-select
                                 v-model="etapasSelecionadas"
                                 :items="etapas"
@@ -26,7 +83,8 @@
                                 full-width
                                 hint="Etapas da carga a serem acionadas"
                                 persistent-hint
-                            ></v-select>
+                            ></v-select>-->
+                            
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
@@ -84,13 +142,27 @@
                 etapasSelecionadas: [],
                 dialogAtualizarDados: false,
                 busca: '',
+                buscaEtapa: '',
+                configuracoes :{
+                    diretorioDados: 'C:\\Program Files\\PostgreSQL\\dados',
+                    ano: 2021,
+                    dataPadrao: new Date().toLocaleDateString(),
+                    periodoPactuacao: 0
+                },
             }
         },
         created () {
             listarEtapas().then(response => {
                 this.etapas = response.body.etapas.map(etapa => {
-                    return {text: etapa.descricao, value: etapa.codigo}
+                    return etapa
+                    //return {text: etapa.descricao, value: etapa.codigo}
                 })
+            }).catch (error => {
+                    console.log("ERROR:", error)
+                    displayMessage(this, true, error.body.error, 'error')
+                    if (error.status === ERROR_SESSION_EXPIRED){
+                        this.$store.dispatch('ActionLogout')
+                    }                         
             })
         },
         computed: {
@@ -111,7 +183,27 @@
                     { text: 'Erro', value: 'erro' },
                     { text: 'Data', value: 'datahora' },
                     ]
-                },            
+                },  
+            colunasEtapas () {
+                    return [
+                    {
+                        text: 'Código',
+                        align: 'start',
+                        sortable: true,
+                        value: 'codigo',
+                    },
+                    {
+                        text: 'Descrição',
+                        sortable: true,
+                        value: 'descricao',
+                    },
+                    {
+                        text: 'Arquivo',
+                        sortable: true,
+                        value: 'arquivo',
+                    },                    
+                    ]
+                },                         
         },
         methods: {
             abrirPopupAtualizarDados(){
@@ -123,7 +215,7 @@
                 this.dialogAtualizarDados = false
             },            
             atualizarDados(){
-                atualizarDados(this.etapasSelecionadas).then(response => {
+                atualizarDados(this.etapasSelecionadas, this.configuracoes).then(response => {
                     displayMessagePopup(this, true, response.body[MESSAGE] + ' Acompanhe o andamento através das funcionalidades de consultar etapas.',
                         'info')
                 }).catch( error => {
@@ -134,7 +226,10 @@
                 listarEtapasRealizadas().then(response => {
                     this.etapasRealizadas = response.body.etapasRealizadas
                 }).catch (error => {
-                    console.log('Error: ', error)
+                    displayMessage(this, true, error.body.error, 'error')
+                    if (error.status === ERROR_SESSION_EXPIRED){
+                        this.$store.dispatch('ActionLogout')
+                    }                         
                 })
             }, 
             listarTodasAtualizacoes(){
@@ -164,6 +259,8 @@ function displayMessagePopup(owner, showAlert, message, type){
     owner.alertaPopup = message
     owner.tipoAlertaPopup = type
 }     
+
+
 </script>
 
 

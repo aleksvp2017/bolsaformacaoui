@@ -116,6 +116,7 @@
             temAcesso(){
             },
             links (){
+                console.log("links")
                 var itens = []
                 //Precisa do arquivo de rotas por causa do mapeamento com o componente, que não pode ser
                 //simplesmente uma string, tem que ser o componente mesmo
@@ -144,6 +145,7 @@
                         })
                     }
                 })
+                console.log("fim links")
                 return itens.sort((itemA, itemB) => {
                     if (itemA.ordem > itemB.ordem) return 1
                     if (itemA.ordem < itemB.ordem) return -1
