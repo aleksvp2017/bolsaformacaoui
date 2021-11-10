@@ -6,7 +6,7 @@
         <br/><br/><br/>
         <div align="center">
             <v-btn color="primary" class="white--text" @click="abrirPopupAtualizarDados">Atualizar dados</v-btn>
-                <v-dialog v-model="dialogAtualizarDados" persistent max-width="60%">
+                <v-dialog v-model="dialogAtualizarDados" persistent max-width="60%" heigth="100px">
                     <v-card>
                         <v-card-text>                        
                             <v-alert :type="tipoAlertaPopup" dense text dismissible v-model="mostrarAlertaPopup">
@@ -15,40 +15,61 @@
                             <span class="text-h6">
                                 Altere as configurações se necessário, selecione as etapas que deseja e clique em "Atualizar".
                             </span>
-                            <br/>
+                            <br/><br/>
                             <!-- CONFIGURACOES -->
-                            <br/>
                             
-                            <p class="text-center font-weight-black">Configurações</p>
-                            <v-row >
+                            <!--<p class="text-center font-weight-black">Configurações</p>-->
+
+                            <v-row max-height="100px" >
                                 <v-col
                                     cols="12"
                                     sm="8"
                                 >
-                                    <v-text-field label="Diretório das planilhas" hint="Use barras duplas \\ para separar as pastas" 
+                                    <v-text-field label="Diretório das planilhas" hint="Use barras duplas \\ para separar as pastas" dense
                                         v-model="configuracoes.diretorioDados" type="text"/>
                                 </v-col>
                                 <v-col
                                     cols="12"
                                     sm="4"
                                 >       
-                                    <v-text-field label="Ano padrão" v-model="configuracoes.ano" type="number"/>
+                                    <v-text-field label="Ano padrão" v-model="configuracoes.ano" type="number" dense/>
                                 </v-col>
                             </v-row>
-                            <v-row >
+                            <v-row dense>
                                 <v-col
                                     cols="12"
                                     sm="8"
                                 >    
-                                    <v-text-field label="Período pactuação" v-model="configuracoes.periodoPactuacao" type="number"/>                                       
+                                    <v-text-field label="Período pactuação" v-model="configuracoes.periodoPactuacao" type="number" dense/>                                       
                                 </v-col>
                                 <v-col
                                     cols="12"
                                     sm="4"
                                 >                                     
-                                    <v-text-field label="Data padrão" v-model="configuracoes.dataPadrao" type="text"/>
+                                    <v-text-field label="Data dados" v-model="configuracoes.dataDados" type="text" dense/>
                                 </v-col>
-                            </v-row>
+                            </v-row >
+                            <v-row dense >
+                                <v-col
+                                    cols="12"
+                                    sm="4"
+                                >    
+                                    <v-text-field label="SEI" v-model="configuracoes.sei" type="text" dense/>                                       
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="4"
+                                >                                     
+                                    <v-text-field label="TED" v-model="configuracoes.ted" type="text" dense/>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="4"
+                                >                                     
+                                    <v-checkbox v-model="configuracoes.incluiColunasExtras" label="Tem colunas extras?"></v-checkbox>
+                                </v-col>
+
+                            </v-row>                            
                             
                             <!-- ETAPAS -->
                             <p class="text-center font-weight-black">Etapas</p>
@@ -144,10 +165,13 @@
                 busca: '',
                 buscaEtapa: '',
                 configuracoes :{
-                    diretorioDados: 'C:\\Program Files\\PostgreSQL\\dados',
+                    diretorioDados: `C:\\\\Program Files\\\\PostgreSQL\\\\dados`,
                     ano: 2021,
-                    dataPadrao: new Date().toLocaleDateString(),
-                    periodoPactuacao: 0
+                    dataDados: new Date().toLocaleDateString(),
+                    periodoPactuacao: 0,
+                    sei: '',
+                    ted: '',
+                    incluiColunasExtras: false,
                 },
             }
         },
